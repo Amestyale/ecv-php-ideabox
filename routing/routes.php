@@ -2,6 +2,7 @@
 
 
 
+$router->get('/','IdeaController#index');
 $router->scope('/authentification', function(Router $router){
     $router->get('/deconnexion','AuthController#logout');
     $router->get('/connexion','AuthController#login');
@@ -24,5 +25,5 @@ $router->scope('/idees', function(Router $router){
     $router->get('/:slug/edition','IdeaController#edit');
     $router->post('/:slug/edition','IdeaController#update');
     $router->get('/:slug/vote/:vote','IdeaController#vote');
-    $router->get('/:slug/suppression','IdeaController#delete');
+    $router->get('/:slug/suppression','IdeaController#destroy');
 });

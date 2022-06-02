@@ -10,7 +10,7 @@ class IdeaDao extends Dao
         SELECT 
             i.id, u.id AS author_id, u.email AS author_email, i.title, i.description, i.publish_date, i.image, i.slug,
             COUNT(iu.vote) AS total,
-            SUM(iu.vote) AS note,
+            COALESCE(SUM(iu.vote),0) AS note,
             AVG(iu.vote) AS avg, 
             SUM (
             CASE
@@ -24,8 +24,8 @@ class IdeaDao extends Dao
             END) AS total_down FROM idea AS i 
         LEFT JOIN idea_user AS iu ON iu.idea_id = i.id 
         INNER JOIN user AS u ON i.author_id = u.id 
-        GROUP BY i.id
-        ORDER BY avg DESC
+        GROUP BY i.id 
+        ORDER BY note DESC 
         LIMIT $limit
         OFFSET $offset 
         ; ";
@@ -155,6 +155,7 @@ class IdeaDao extends Dao
         $idea = $this->fetchBySlug($valid_slug);
         while($idea && $idea->getId() != $id){
             $valid_slug = $slug."-".++$i;
+            $idea = $this->fetchBySlug($valid_slug);
         }
 
         $sql = "UPDATE idea SET title = :title, slug = :slug, description = :description WHERE id = :id ";
@@ -168,9 +169,13 @@ class IdeaDao extends Dao
                 "description" => $description
             ));
     
-            return true;
+            return array(
+                "id" => $id, 
+                "title" => $title, 
+                "slug" => $valid_slug, 
+                "description" => $description
+            );
         } catch (\Throwable $th) {
-            var_dump($th);
             throw $th;
         }
     }
@@ -236,7 +241,12 @@ class IdeaDao extends Dao
     }
 
     
-    public function getVoteByUserAndId($user, $id)
-    {  
+    public function deleteBySlug($slug)
+    {
+        $sql = "DELETE FROM idea WHERE slug = :slug;";
+        $req = $this->db()->prepare($sql);
+        $req->execute(array(
+            "slug" => $slug
+        ));
     }
 }

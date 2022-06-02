@@ -15,18 +15,16 @@ class AuthController
         return $_SESSION["user_id"] ?? null;
     }
 
-    public function show($id)
+    public static function needToBeLoged() : void
     {
-        $dao = new UserDao();
-        var_dump($dao->fetchByEmail("bob@coucou.com"));
-
-        view("auth/profile","Profil", ["id" => $id]);
+        if(!isset($_SESSION["user_id"]))header("location: /authentification/connexion");
     }
+    
     
     public function logout()
     {
         unset($_SESSION["user_id"]);
-        return $this->login();
+        header("location: /");
     }
 
     public function login()

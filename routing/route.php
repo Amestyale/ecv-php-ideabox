@@ -37,7 +37,7 @@ class Route
             '\/',
             $url
         );
-        return '/^'.$url.'$/';
+        return '/^'.$url.'(\/)??$/';
     }
 
     public function check($url, $method)

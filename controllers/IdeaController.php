@@ -6,7 +6,7 @@ class IdeaController
     public function index()
     {
         $dao = new IdeaDao;
-        $ideas = $dao->fetchAll();
+        $ideas = $dao->fetchAll(6,0);
 
         view("idea/index","Liste des idées", ["ideas" => $ideas]);
     }
@@ -16,7 +16,7 @@ class IdeaController
         $dao = new IdeaDao;
         $ideas = $dao->fetchByUser(AuthController::getLogedId());
 
-        view("idea/index","Liste des idées", ["ideas" => $ideas]);
+        view("idea/mine","Liste des idées", ["ideas" => $ideas]);
     }
 
 
@@ -30,6 +30,7 @@ class IdeaController
     
     public function create()
     {
+        AuthController::needToBeLoged();
         view("idea/create","Publier une nouvelle idée");
     }
     
@@ -50,12 +51,12 @@ class IdeaController
         $slug = to_slug($title);
         try {
             $dao = new IdeaDao;
-            $dao->store($title,$slug,$description,$image_name,AuthController::getLogedId());
+            $idea = $dao->store($title,$slug,$description,$image_name,AuthController::getLogedId());
+            header("location: /idees/".$idea->getSlug());
         } catch (\Throwable $th) {
             return $th;
         }
-        exit;
-        view("idea/create","Publier une nouvelle idée");
+        
     }
     
     public function edit($slug)
@@ -67,7 +68,7 @@ class IdeaController
 
     public function storeImage($img, $name = null)
     {
-        if($name) unlink("./public/uploads/idea/$name");
+        if($name && file_exists("/public/uploads/idea/$name")) unlink("/public/uploads/idea/$name");
         $name = uniqid("idea_").time();
         return upload_file('idea',$name,$img);
     }
@@ -86,13 +87,14 @@ class IdeaController
         if(has_errors()) return $this->create();
 
         $slug = to_slug($title);
-        if($image) {
+        if($image['size'] > 0) {
             $link = $this->storeImage($image, $idea->getImage());
             $dao->updateImage($idea->getId(),$link);
         }
         try {
             $dao = new IdeaDao;
-            $dao->updateIdea($idea->getId(),$title,$slug,$description);
+            $data_dao = $dao->updateIdea($idea->getId(),$title,$slug,$description);
+            header("location: /idees/".$data_dao['slug']);
         } catch (\Throwable $th) {
             return $th;
         }
@@ -101,13 +103,17 @@ class IdeaController
     }
     
     public function destroy($slug){
-        
+        $dao = new IdeaDao;
+        $idea = $dao->fetchBySlug($slug);
+        if($idea->getAuthorId() != AuthController::getLogedId()) return error_404();
+        $idea = $dao->deleteBySlug($slug);
+
         header("location: /idees");
     }
 
     public function vote($slug, $value)
     {
-        if(!AuthController::getLogedId()) return;
+        AuthController::needToBeLoged();
         $dao = new IdeaDao;
         $idea = $dao->fetchBySlug($slug);
         
