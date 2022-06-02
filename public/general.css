@@ -1,0 +1,255 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+html, body{
+    min-height: 100vh;
+}
+main{
+    min-height: calc(100vh - 14em);
+    padding: 5em 0;
+}
+
+button{
+    border: none;
+}
+ul{
+    list-style: none;
+}
+a{
+    text-decoration: none; /* no underline */
+}
+:root{
+    --color-primary: #CEB37E;
+    --color-grey: gainsboro;
+    --color-white: white;
+}
+
+.l-container{
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+}
+
+.l-container--roomy{
+    padding: 1em 5em;
+    gap: 2.5em;
+}
+
+.l-col3{
+    grid-column: span 3;
+}
+.l-col4{
+    grid-column: span 4;
+}
+.l-col6{
+    grid-column: span 6;
+}
+.l-col8{
+    grid-column: span 8;
+}
+.l-col9{
+    grid-column: span 9;
+}
+.l-col12{
+    grid-column: span 12;
+}
+
+
+@media (max-width: 1000px) { 
+    .l-container--roomy{
+        padding: 1em 1em;
+    }
+    .l-col3, .l-col4, .l-col6, .l-col8, .l-col9{
+        grid-column: span 6;
+    }
+}
+
+@media (max-width: 500px) { 
+    .l-container--roomy{
+        padding: 1em 1em;
+    }
+    .l-col3, .l-col4, .l-col6, .l-col8, .l-col9{
+        grid-column: span 12;
+    }
+}
+
+
+.l-auto{
+    display: block;
+    margin: auto;
+}
+
+.l-group{
+    display: flex;
+    gap: 0.5em;
+    justify-content: space-between;
+}
+.l-group--end{
+    justify-content: end;
+}
+.l-topauto{
+    margin-top: auto;
+}
+
+.c-navbar{
+    box-shadow: 0px 2px 6px var(--color-grey);
+    padding: 1em 0;
+    height: 2em;
+}
+
+.o-btn{
+    background-color: var(--color-primary);
+    padding: 0.5em 1em;
+    color: var(--color-white);
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+}
+.o-btn--danger{
+    background-color: rgb(187, 38, 19);
+}
+.o-btn--central{
+    margin: 2em auto;
+    display: block;
+}
+
+.o-card{
+    box-shadow: 0px 2px 6px var(--color-grey);
+    width: 100%;
+    margin: auto;
+    height: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.o-card__img{
+    height: 10em;
+    width: 100%;
+    position: relative;
+}
+.o-card__img img, .o-card__filter{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.o-card__filter{
+    background-color: rgba(0, 0, 0, 0.25);
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.o-card__title{
+    color: var(--color-primary);
+    font-size: 1.5em;
+}
+.o-card__description{
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.o-card__title,.o-card__description,.o-card__buttons{
+    padding: 0.25rem 0.5rem;
+}
+.o-card__icon{   
+    position: absolute;
+    right: 0.5em;
+    bottom: 0.5em;
+    width: 2em;
+    color: white;
+    fill: white;
+    z-index: 2;
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.o-pres{
+    box-shadow: 0px 2px 6px var(--color-grey);
+    max-width: 1000px;
+    margin: auto;
+    display: block;
+}
+.o-pres--alone{    
+    width: fit-content;
+    min-width: 25em;
+    max-width: 90%;
+}
+
+.o-pres__body{
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    min-height: 20em;
+}
+.o-pres--alone .o-pres__body{
+    grid-template-columns: 1fr;
+}
+.o-pres__img{    
+    width: 100%;
+    object-fit: cover;
+    height: 0px;
+    min-height: 100%;
+}
+.o-pres__content{
+    padding: 0.5em 1em;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+form input[type="submit"]{
+    margin-top: auto;
+    display: block;
+    margin-left: auto;
+    width: fit-content;
+}
+
+.c-stats{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1.5em 1em;
+    column-gap: 1em;
+}
+.c-stats > *{
+    display: grid;
+    grid-template-rows: 1.5em repeat(2, auto);
+    gap: 0.5em;
+    align-items: center;
+    justify-items: center;
+}
+.c-stats svg{
+    height: 100%;
+}
+.c-stats p{
+    text-align: center;
+}
+
+.c-stats__number{
+    padding-top: 0.25em;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.o-annotation{
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.75em;
+    text-align: right;
+}
+
+input:not([type="submit"]), textarea{
+    width: 100%;
+    border: 1px solid var(--color-grey);
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
